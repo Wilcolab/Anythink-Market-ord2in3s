@@ -19,7 +19,7 @@ var operation = null;
 function calculate(operand1, operand2, operation) {
     var uri = location.origin + "/arithmetic";
 
-    // TODO: Add operator
+    // Add operator logic
     switch (operation) {
         case '+':
             uri += "?operation=add";
@@ -32,6 +32,31 @@ function calculate(operand1, operand2, operation) {
             break;
         case '/':
             uri += "?operation=divide";
+            break;
+        case '^': // Power operation (x^y)
+        case 'x^y': // Accept both '^' and 'x^y' for power
+            uri += "?operation=power";
+            break;
+        case '%':
+            uri += "?operation=modulus";
+            break;
+        case 'sqrt':
+            uri += "?operation=squareRoot";
+            operand2 = 0; // For square root, operand2 is not used
+            break;
+        case 'log':
+            uri += "?operation=logarithm";
+            operand2 = 0; // For logarithm, operand2 is not used
+            break;
+        case 'exp':
+            uri += "?operation=exponential";
+            operand2 = 0; // For exponential, operand2 is not used
+            break;
+        case 'base': // Base conversion operation
+            uri += "?operation=baseConversion";
+            if (operand2 === 0) {
+                operand2 = 10; // Default base to 10 if not specified
+            }
             break;
         default:
             setError();
@@ -112,7 +137,12 @@ function signPressed() {
 
 function operationPressed(op) {
     operand1 = getValue();
-    operation = op;
+    // Only normalize 'x^y' to '^', do not handle other cases
+    if (op === 'x^y' || op === '^') {
+        operation = '^';
+    } else {
+        operation = op;
+    }
     state = states.operator;
 }
 
@@ -138,7 +168,8 @@ document.addEventListener('keypress', (event) => {
         numberPressed(event.key);
     } else if (event.key == '.') {
         decimalPressed();
-    } else if (event.key.match(/^[-*+/]$/)) {
+    } else if (event.key.match(/^[-*+/^]$/)) {
+        // Accept '^' for power only
         operationPressed(event.key);
     } else if (event.key == '=') {
         equalPressed();

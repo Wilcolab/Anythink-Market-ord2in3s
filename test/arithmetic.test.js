@@ -205,4 +205,40 @@ describe('Arithmetic', function () {
                 });
         });
     });
+
+    // Power operation tests
+    describe('Power', function () {
+        it('raises a number to a positive integer power', function (done) {
+            request.get('/arithmetic?operation=power&operand1=2&operand2=3')
+                .expect(200)
+                .end(function (err, res) {
+                    expect(res.body).to.eql({ result: 8 });
+                    done();
+                });
+        });
+        it('raises a number to the power of zero', function (done) {
+            request.get('/arithmetic?operation=power&operand1=5&operand2=0')
+                .expect(200)
+                .end(function (err, res) {
+                    expect(res.body).to.eql({ result: 1 });
+                    done();
+                });
+        });
+        it('raises a number to a negative power', function (done) {
+            request.get('/arithmetic?operation=power&operand1=2&operand2=-2')
+                .expect(200)
+                .end(function (err, res) {
+                    expect(res.body).to.eql({ result: 0.25 });
+                    done();
+                });
+        });
+        it('raises a negative number to an odd power', function (done) {
+            request.get('/arithmetic?operation=power&operand1=-2&operand2=3')
+                .expect(200)
+                .end(function (err, res) {
+                    expect(res.body).to.eql({ result: -8 });
+                    done();
+                });
+        });
+    });
 });
